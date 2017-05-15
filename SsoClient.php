@@ -29,7 +29,14 @@ class SsoClient
         $this->m_broker_secret = $broker_secret;
     }
     
-    
+    /**
+     * This method should be called when a user needs to login via the SSO. The browser will be
+     * redirected to the SSO, and then returned to this method once the login is complete. The
+     * method will check the response details and, if valid, will return an object containing the
+     * user details, for the developer to save into a session.
+     * 
+     * @return object - an object containing the details of the user who has successfully logged in
+     */
     public function login()
     {
         $get = filter_input_array(INPUT_GET);
@@ -80,7 +87,39 @@ class SsoClient
         return $response;
     }
     
+    /**
+     * This method redirects the browser to the logout page on the SSO, to trigger a logout. The
+     * developer should destroy the user's local session, before they call this method.
+     */
     public function logout()
+    {
+        $params = array('broker_id' => $this->m_broker_id);
+        
+        if (defined('\iRAP\SsoClient\IRAP_SSO_URL'))
+        {
+            $url = \iRAP\SsoClient\IRAP_SSO_URL;
+        }
+        else
+        {
+            $url = \iRAP\SsoClient\IRAP_SSO_LIVE_URL;
+        }
+        
+        header("Location: " . $url . "/logout?" . http_build_query($params));
+        die();
+    }
+    
+    /**
+     * Method is called as a web hook, that needs to be accessible from the SSO. When the user
+     * logs out of their account on the SSO, a message is sent to all brokers, instructing them to
+     * kill the session. This method validates that request and returns an object containing the 
+     * expected session id of the session to destroy. It is up to the developer to handle the
+     * destruction of the session itself.
+     * 
+     * @return \stdClass
+     * @throws type
+     * @throws \Exception
+     */
+    public function logoutWebhook()
     {
         try
         {
@@ -143,7 +182,14 @@ class SsoClient
         }
     }
     
-    
+    /**
+     * Checks the parameters received from the SSO against a list of expected params, stored in the
+     * packages defines.php file. If a parameter is missing, it will return false. Otherwise it will
+     * return true.
+     * 
+     * @param array $params
+     * @return boolean
+     */
     private function checkRequiredLoginParams($params)
     {
         $passed = true;
@@ -162,7 +208,14 @@ class SsoClient
         return $passed;
     }
     
-    
+    /**
+     * Checks the parameters received from the SSO against a list of expected params, stored in the
+     * packages defines.php file. If a parameter is missing, it will return false. Otherwise it will
+     * return true.
+     * 
+     * @param array $params
+     * @return boolean
+     */
     private function checkRequiredLogoutParams($params)
     {
         $passed = true;
@@ -181,7 +234,14 @@ class SsoClient
         return $passed;
     }
     
-    
+    /**
+     * Checks the timestamp returned from the SSO, to ensure that the request has been made recently
+     * enough to be valid. This is to guard against replay attacks. The acceptable age of the
+     * request can be found in the defines
+     * 
+     * @param timestamp $timestamp
+     * @return boolean
+     */
     private function checkRequestExpiry($timestamp)
     {
         $passed = true;
@@ -195,7 +255,11 @@ class SsoClient
         return $passed;
     }
     
-    
+    /**
+     * This method redirects the browser to the SSO. It is called by the login() method when valid
+     * login credentials are not found.
+     * 
+     */
     private function redirectToSSO()
     {
         $params = array('broker_id' => $this->m_broker_id);
