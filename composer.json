@@ -1,0 +1,25 @@
+{
+    "name": "irap/sso-client",
+    "type": "library",
+    "description": "A client for handling user logins via the SSO",
+    "keywords": ["sso","login","vida"],
+    "homepage": "https://github.com/iRAP-software/package-sso-client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "iRAP",
+            "email": "support@irap.org",
+            "homepage": "http://vida.irap.org/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "ext-mcrypt": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "iRAP\\SsoClient\\": ""
+        }
+    }
+}
