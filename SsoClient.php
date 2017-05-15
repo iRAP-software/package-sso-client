@@ -93,12 +93,12 @@ class SsoClient
 
                 if (!$this->checkRequiredLogoutParams($dataArray))
                 {
-                    throw Exception("Missing required parameter");
+                    throw \Exception("Missing required parameter");
                 }
 
                 if (!$this->checkRequestExpiry($dataArray['time']))
                 {
-                    throw new Exception("Request is out of date.");
+                    throw new \Exception("Request is out of date.");
                 }
 
                 # Check the signature is valid (so we know request actually came from sso.irap.org)
@@ -118,16 +118,16 @@ class SsoClient
                 else
                 {
                     # Invalid request (hack?), redirect the user back to sign in.
-                    throw new Exception("Invalid signature.");
+                    throw new \Exception("Invalid signature.");
                 }
             }
             else 
             {
-                throw new Exception("Missing required data parameter");
+                throw new \Exception("Missing required data parameter");
             }
             
         }
-        catch (Exception $e)
+        catch (\Exception $e)
         {
             $responseArray = array(
                 "result"  => "error",
