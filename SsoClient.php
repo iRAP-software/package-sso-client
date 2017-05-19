@@ -183,6 +183,28 @@ class SsoClient
     }
     
     /**
+     * This method redirects the browser to the SSO. It is called by the login() method when valid
+     * login credentials are not found and by the user when keeping the SSO session alive.
+     * 
+     */
+    public function redirectToSSO()
+    {
+        $params = array('broker_id' => $this->m_broker_id);
+        
+        if (defined('\iRAP\SsoClient\IRAP_SSO_URL'))
+        {
+            $url = \iRAP\SsoClient\IRAP_SSO_URL;
+        }
+        else
+        {
+            $url = \iRAP\SsoClient\IRAP_SSO_LIVE_URL;
+        }
+        
+        header("Location: " . $url . "?" . http_build_query($params));
+        die();
+    }
+    
+    /**
      * Checks the parameters received from the SSO against a list of expected params, stored in the
      * packages defines.php file. If a parameter is missing, it will return false. Otherwise it will
      * return true.
@@ -254,29 +276,6 @@ class SsoClient
         
         return $passed;
     }
-    
-    /**
-     * This method redirects the browser to the SSO. It is called by the login() method when valid
-     * login credentials are not found.
-     * 
-     */
-    private function redirectToSSO()
-    {
-        $params = array('broker_id' => $this->m_broker_id);
-        
-        if (defined('\iRAP\SsoClient\IRAP_SSO_URL'))
-        {
-            $url = \iRAP\SsoClient\IRAP_SSO_URL;
-        }
-        else
-        {
-            $url = \iRAP\SsoClient\IRAP_SSO_LIVE_URL;
-        }
-        
-        header("Location: " . $url . "?" . http_build_query($params));
-        die();
-    }
-    
     
     /**
      * Check whether the user details sent to us came from
