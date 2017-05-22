@@ -62,7 +62,7 @@ class SsoClient
         {
             $session_id = $this->generateSessionId($userDataArray['user_id']);
             
-            $response = new \SsoObject(
+            $response = new SsoObject(
                 $session_id, 
                 $userDataArray['user_id'], 
                 $userDataArray['expires'], 
