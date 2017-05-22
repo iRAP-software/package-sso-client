@@ -4,6 +4,8 @@
  * Object returned by the SSO login process
  */
 
+namespace iRAP\SsoClient;
+
 class SsoObject
 {
     private $m_session_id;
