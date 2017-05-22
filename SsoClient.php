@@ -16,6 +16,7 @@ class SsoClient
  
     private $m_broker_id;
     private $m_broker_secret;
+    private $m_logged_in;
     
     /**
      * Create the SSO client object by supplying the broker id and broker secret.
@@ -27,6 +28,7 @@ class SsoClient
     {
         $this->m_broker_id = $broker_id;
         $this->m_broker_secret = $broker_secret;
+        $this->m_logged_in = false;
     }
     
     /**
@@ -48,40 +50,32 @@ class SsoClient
 
             if (!$this->checkRequiredLoginParams($userDataArray))
             {
-                $response = $this->redirectToSSO();
+                $this->redirectToSSO();
             }
         }
         else 
         {
-            $response = $this->redirectToSSO();
+            $this->redirectToSSO();
         }
 
         if ($this->isValidSignature($userDataArray))
         {
-            $response = new \stdClass();
-            $response->session_id = $this->generateSessionId($userDataArray['user_id']);
-            $response->user_id = $userDataArray['user_id'];
+            $session_id = $this->generateSessionId($userDataArray['user_id']);
             
-            if (is_string($userDataArray['user_name']) && $userDataArray['user_name'] !== '')
-            {
-                $response->user_name = $userDataArray['user_name'];
-            }
+            $response = new \SsoObject(
+                $session_id, 
+                $userDataArray['user_id'], 
+                $userDataArray['expires'], 
+                $userDataArray['user_name'], 
+                $userDataArray['user_email']
+            );     
             
-            if (is_string($userDataArray['user_email']) && $userDataArray['user_email'] !== '')
-            {
-                $response->user_email = $userDataArray['user_email'];
-            }
-            
-            if (is_int($userDataArray['expires']) && $userDataArray['expires'] !== '')
-            {
-                $response->sso_expiry = $userDataArray['expires'];
-            }
-            
+            $this->m_logged_in = true;
         }
         else
         {
             # Invalid request (hack?), redirect the user back to sign in.
-            $response = $this->redirectToSSO();
+            $this->redirectToSSO();
         }
         
         return $response;
@@ -202,6 +196,16 @@ class SsoClient
         
         header("Location: " . $url . "?" . http_build_query($params));
         die();
+    }
+    
+    /**
+     * Returns true if login was successful or false if not.
+     * 
+     * @return boolean
+     */
+    public function loginSuccessful()
+    {
+        return $this->m_logged_in;
     }
     
     /**
