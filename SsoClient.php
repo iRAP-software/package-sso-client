@@ -76,7 +76,10 @@ class SsoClient
         else
         {
             # Invalid request (hack?), redirect the user back to sign in.
-            $this->redirectToSSO($returnData);
+            $response = new \stdClass();
+            $response->status = 'Error';
+            $response->code = '401';
+            $response->error = 'Invalid signature returned by the SSO';
         }
         
         return $response;
