@@ -37,9 +37,10 @@ class SsoClient
      * method will check the response details and, if valid, will return an object containing the
      * user details, for the developer to save into a session.
      * 
+     * @param array $returnData - an array of data to be returned back to the client
      * @return object - an object containing the details of the user who has successfully logged in
      */
-    public function login()
+    public function login($returnData = null)
     {
         $get = filter_input_array(INPUT_GET);
     
@@ -50,12 +51,12 @@ class SsoClient
 
             if (!$this->checkRequiredLoginParams($userDataArray))
             {
-                $this->redirectToSSO();
+                $this->redirectToSSO($returnData);
             }
         }
         else 
         {
-            $this->redirectToSSO();
+            $this->redirectToSSO($returnData);
         }
 
         if ($this->isValidSignature($userDataArray))
@@ -75,7 +76,7 @@ class SsoClient
         else
         {
             # Invalid request (hack?), redirect the user back to sign in.
-            $this->redirectToSSO();
+            $this->redirectToSSO($returnData);
         }
         
         return $response;
@@ -141,6 +142,7 @@ class SsoClient
                     
                     $response = new \stdClass();
                     $response->session_id = $session_id;
+                    $response->user_id = $dataArray['user_id'];
                     
                     $responseArray = array(
                         "result"  => "success",
@@ -180,8 +182,10 @@ class SsoClient
      * This method redirects the browser to the SSO. It is called by the login() method when valid
      * login credentials are not found and by the user when keeping the SSO session alive.
      * 
+     * @param array $returnData - an array of data to be returned back to the client
+     * 
      */
-    public function redirectToSSO()
+    public function redirectToSSO($returnData = null)
     {
         $params = array('broker_id' => $this->m_broker_id);
         
@@ -192,6 +196,13 @@ class SsoClient
         else
         {
             $url = \iRAP\SsoClient\IRAP_SSO_LIVE_URL;
+        }
+        
+        if (is_array($returnData))
+        {
+            $jsonData = json_encode($returnData, JSON_UNESCAPED_SLASHES);
+            $urlData = urlencode($jsonData);
+            $params['returnData'] = $urlData;
         }
         
         header("Location: " . $url . "?" . http_build_query($params));
