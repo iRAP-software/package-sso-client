@@ -69,7 +69,7 @@ class SsoClient
                 $userDataArray['expires'], 
                 $userDataArray['user_name'], 
                 $userDataArray['user_email'],
-                urldecode($userDataArray['return_data'])
+                json_decode(urldecode($userDataArray['return_data']), true)
             );     
             
             $this->m_logged_in = true;
