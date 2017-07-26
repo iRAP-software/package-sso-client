@@ -183,13 +183,34 @@ class SsoClient
     }
     
     /**
+     * Returns true if login was successful or false if not.
+     * 
+     * @return boolean
+     */
+    public function loginSuccessful()
+    {
+        return $this->m_logged_in;
+    }
+    
+    /**
+     * Alias of login, used to handle the keep awake requests, but identical in form.
+     * 
+     * @param array $returnData - an array of data to be returned back to the client
+     * @return SsoObject
+     */
+    public function renewSSOSession($returnData = null)
+    {
+        return $this->login($returnData);
+    }
+    
+    /**
      * This method redirects the browser to the SSO. It is called by the login() method when valid
      * login credentials are not found and by the user when keeping the SSO session alive.
      * 
      * @param array $returnData - an array of data to be returned back to the client
      * 
      */
-    public function redirectToSSO($returnData = null)
+    private function redirectToSSO($returnData = null)
     {
         $params = array('broker_id' => $this->m_broker_id);
         
@@ -211,16 +232,6 @@ class SsoClient
         
         header("Location: " . $url . "?" . http_build_query($params));
         die();
-    }
-    
-    /**
-     * Returns true if login was successful or false if not.
-     * 
-     * @return boolean
-     */
-    public function loginSuccessful()
-    {
-        return $this->m_logged_in;
     }
     
     /**
