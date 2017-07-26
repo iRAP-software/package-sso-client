@@ -13,8 +13,9 @@ class SsoObject
     private $m_sso_expiry;
     private $m_user_name;
     private $m_user_email;
+    private $m_return_data;
     
-    public function __construct($session_id, $user_id, $sso_expiry, $user_name = null, $user_email = null)
+    public function __construct($session_id, $user_id, $sso_expiry, $user_name = null, $user_email = null, $return_data = array())
     {
         $this->m_session_id = $session_id;
         $this->m_user_id = $user_id;
@@ -33,6 +34,8 @@ class SsoObject
         {
             $this->m_sso_expiry = $sso_expiry;
         }
+        
+        $this->m_return_data = $return_data;
     }
     
     public function get_session_id()    { return $this->m_session_id; }
@@ -40,5 +43,6 @@ class SsoObject
     public function get_sso_expiry()    { return $this->m_sso_expiry; }
     public function get_user_name()     { return $this->m_user_name; }
     public function get_user_email()    { return $this->m_user_email; }
+    public function get_return_data()   { return $this->m_return_data; }
     
 }
