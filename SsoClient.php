@@ -206,7 +206,7 @@ class SsoClient
         {
             $jsonData = json_encode($returnData, JSON_UNESCAPED_SLASHES);
             $urlData = urlencode($jsonData);
-            $params['returnData'] = $urlData;
+            $params['return_data'] = $urlData;
         }
         
         header("Location: " . $url . "?" . http_build_query($params));
