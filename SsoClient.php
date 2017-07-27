@@ -132,6 +132,7 @@ class SsoClient
                 if (!$this->checkRequiredLogoutParams($dataArray))
                 {
                     var_dump($get);
+                    var_dump($decodedUserJsonData);
                     var_dump($dataArray);
                     throw new \Exception("Missing required parameter");
                 }
