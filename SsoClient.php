@@ -127,7 +127,7 @@ class SsoClient
             if (isset($get['data']))
             {
                 $decodedUserJsonData = urldecode($get['data']);
-                $dataArray = json_decode($decodedUserJsonData, true);
+                $dataArray = json_decode($decodedUserJsonData);
 
                 if (!$this->checkRequiredLogoutParams($dataArray))
                 {
