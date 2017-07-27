@@ -131,6 +131,7 @@ class SsoClient
 
                 if (!$this->checkRequiredLogoutParams($dataArray))
                 {
+                    print_r($dataArray);
                     throw new \Exception("Missing required parameter");
                 }
 
