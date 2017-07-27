@@ -131,7 +131,7 @@ class SsoClient
 
                 if (!$this->checkRequiredLogoutParams($dataArray))
                 {
-                    throw \Exception("Missing required parameter");
+                    throw new \Exception("Missing required parameter");
                 }
 
                 if (!$this->checkRequestExpiry($dataArray['time']))
