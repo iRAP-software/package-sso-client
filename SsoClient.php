@@ -131,18 +131,13 @@ class SsoClient
 
                 if (!$this->checkRequiredLogoutParams($dataArray))
                 {
-                    var_dump($get);
-                    echo '<br /><br />';
-                    echo($decodedUserJsonData);
-                    echo '<br /><br />';
-                    var_dump($dataArray);
                     throw new \Exception("Missing required parameter");
                 }
 
-                if (!$this->checkRequestExpiry($dataArray['time']))
-                {
-                    throw new \Exception("Request is out of date.");
-                }
+//                if (!$this->checkRequestExpiry($dataArray['time']))
+//                {
+//                    throw new \Exception("Request is out of date.");
+//                }
 
                 # Check the signature is valid (so we know request actually came from sso.irap.org)
                 if ($this->isValidSignature($dataArray))
