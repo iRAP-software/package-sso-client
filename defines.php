@@ -6,7 +6,7 @@
 namespace iRAP\SsoClient;
 
 # URL for the live SSO
-define(__NAMESPACE__ . '\IRAP_SSO_LIVE_URL', 'https://sso.vida.irap.org');
+define(__NAMESPACE__ . '\IRAP_SSO_LIVE_URL', 'https://sso.irap.org');
 
 # Acceptable age for logout requests
 define(__NAMESPACE__ . '\IRAP_SSO_REQUEST_MAX_AGE', 3);
