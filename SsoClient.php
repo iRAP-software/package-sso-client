@@ -217,7 +217,7 @@ class SsoClient
      * be returned back in/to same way where successful login() method is being handled.
      * @return \stdClass
      */
-    public function register(array $formData = [], array $returnData = null)
+    public function register(array $formData = null, array $returnData = null)
     {
         $params = ['broker_id' => $this->m_broker_id];
 
@@ -241,7 +241,7 @@ class SsoClient
             $params['form_data'] = $urlData;
         }
 
-        header("Location: " . $url . "?" . http_build_query($params));
+        header("Location: " . $url . "/register?" . http_build_query($params));
         die();
     }
     
