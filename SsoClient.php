@@ -202,6 +202,48 @@ class SsoClient
     {
         return $this->login($returnData);
     }
+
+    /**
+     * This method should be called when a user is to be registered via broker.
+     * The browser will be redirected to the SSO for the user to complete the registration.
+     * <b>PLEASE NOTE: THIS METHOD DOES NOT GUARANTEE A USER WILL REGISTER</b>
+     * @param array $formData Help user by prefilling some fields of the form.
+     * The data passed should be in format [field_1 => value_1, field_2 => value_2]<br>
+     * Accepted fields are 'email', 'title', 'first_name', 'last_name', 'organisation',
+     * 'position', 'country'. Country will be tried to match with the closest match
+     * if exact match not found.
+     * @param array $returnData Any data that a broker would like to get back if
+     * the user successfully registers and activates their account. This data would
+     * be returned back in/to same way where successful login() method is being handled.
+     * @return \stdClass
+     */
+    public function register(array $formData = null, array $returnData = null)
+    {
+        $params = ['broker_id' => $this->m_broker_id];
+
+        if (defined('\iRAP\SsoClient\IRAP_SSO_URL')) {
+            $url = \iRAP\SsoClient\IRAP_SSO_URL;
+        } else {
+            $url = \iRAP\SsoClient\IRAP_SSO_LIVE_URL;
+        }
+
+        if (is_array($returnData))
+        {
+            $jsonData = json_encode($returnData, JSON_UNESCAPED_SLASHES);
+            $urlData = urlencode($jsonData);
+            $params['return_data'] = $urlData;
+        }
+
+        if (is_array($formData))
+        {
+            $jsonData = json_encode($formData, JSON_UNESCAPED_SLASHES);
+            $urlData = urlencode($jsonData);
+            $params['form_data'] = $urlData;
+        }
+
+        header("Location: " . $url . "/register?" . http_build_query($params));
+        die();
+    }
     
     /**
      * This method redirects the browser to the SSO. It is called by the login() method when valid
